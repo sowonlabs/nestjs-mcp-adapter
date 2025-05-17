@@ -1,0 +1,50 @@
+{
+  "name": "nestjs-mcp-adapter",
+  "version": "0.1.0",
+  "description": "",
+  "keywords": [
+    "nestjs",
+    "mcp",
+    "adapter",
+    "modelcontextprotocol"
+  ],
+  "author": "doha.park@sowonlabs.com",
+  "main": "dist/index.js",
+  "license": "MIT",
+  "types": "dist/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sowonlabs/nestjs-google-oauth-integration.git"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "prepare": "npm run build",
+    "test": "npx vitest run",
+    "lint": "eslint \"{src,apps,libs,tests}/**/*.ts\" --fix",
+    "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\""
+  },
+  "peerDependencies": {
+    "@nestjs/common": ">=9.0.0",
+    "@nestjs/core": ">=9.0.0",
+    "reflect-metadata": ">=0.1.14"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.2.0",
+    "@eslint/js": "^9.18.0",
+    "@nestjs/common": "^11.0.5",
+    "@nestjs/core": "^11.0.5",
+    "@nestjs/testing": "^11.0.5",
+    "dotenv": "^16.5.0",
+    "eslint": "^9.18.0",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-plugin-prettier": "^5.2.3",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.20.0",
+    "unplugin-swc": "^1.5.2",
+    "vitest": "^3.1.3"
+  }
+}
