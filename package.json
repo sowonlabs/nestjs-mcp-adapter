@@ -1,5 +1,5 @@
 {
-  "name": "nestjs-mcp-adapter",
+  "name": "@sowonai/nestjs-mcp-adapter",
   "version": "0.1.0",
   "description": "",
   "keywords": [
@@ -17,19 +17,25 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sowonlabs/nestjs-google-oauth-integration.git"
+    "url": "git+https://github.com/sowonlabs/nestjs-mcp-adapter.git"
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "prepare": "npm run build",
     "test": "npx vitest run",
     "lint": "eslint \"{src,apps,libs,tests}/**/*.ts\" --fix",
-    "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\""
+    "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\"",
+    "example:greet": "ts-node-dev examples/greet/main-http.ts",
+    "example:greet:stdio": "ts-node-dev examples/greet/main-stdio.ts",
+    "example:multi": "ts-node-dev examples/multi-server/main-http.ts",
+    "example:multi:stdio": "ts-node-dev examples/multi-server/main-stdio.ts"
   },
   "peerDependencies": {
     "@nestjs/common": ">=9.0.0",
     "@nestjs/core": ">=9.0.0",
-    "reflect-metadata": ">=0.1.14"
+    "@nestjs/platform-express": "^11.0.5",
+    "reflect-metadata": ">=0.1.14",
+    "@modelcontextprotocol/sdk": "^1.11.4",
+    "zod": "^3.24.4"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
