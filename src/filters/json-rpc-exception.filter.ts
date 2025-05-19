@@ -15,6 +15,13 @@ export class JsonRpcExceptionFilter implements ExceptionFilter {
 
     // Extract JSON-RPC ID from request
     const id = request.body?.id ?? null;
+    
+    // For notifications (id is null or undefined), return an empty response
+    const isNotification = id === undefined || id === null;
+    if (isNotification && request.body?.method?.startsWith('notifications/')) {
+      // Do not return an error response for notifications
+      return response.end();
+    }
 
     // Default response structure
     const jsonRpcResponse = {
@@ -30,7 +37,7 @@ export class JsonRpcExceptionFilter implements ExceptionFilter {
     // Handle McpError type exceptions
     if (exception instanceof McpError) {
       jsonRpcResponse.error.code = exception.code;
-      jsonRpcResponse.error.message = exception.message || 'Unknown error';
+      jsonRpcResponse.error.message = `${exception.message || 'Unknown error'}`;
 
       // Set HTTP status code
       let httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -41,7 +48,13 @@ export class JsonRpcExceptionFilter implements ExceptionFilter {
       }
 
       return response.status(httpStatus).json(jsonRpcResponse);
+    } else if (exception instanceof Error) {
+      // Handle general Error objects
+      jsonRpcResponse.error.message = exception.message || 'Internal server error';
+      return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json(jsonRpcResponse);
     }
 
+    // Handle other exceptions
+    return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json(jsonRpcResponse);
   }
 }

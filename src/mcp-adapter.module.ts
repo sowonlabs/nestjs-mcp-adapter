@@ -1,7 +1,7 @@
-import { Module, DynamicModule, Provider } from '@nestjs/common';
+import { Module, DynamicModule } from '@nestjs/common';
 import { DiscoveryModule } from '@nestjs/core';
 import { MultiServerRegistry } from './registry/multi-server-registry';
-import { McpToolHandler } from './handlers/mcp-tool-handler';
+import { McpHandler } from './handlers/mcp-handler';
 
 /**
  * MCP adapter module
@@ -9,8 +9,11 @@ import { McpToolHandler } from './handlers/mcp-tool-handler';
  */
 @Module({
   imports: [DiscoveryModule],
-  providers: [MultiServerRegistry, McpToolHandler],
-  exports: [MultiServerRegistry, McpToolHandler],
+  providers: [
+    MultiServerRegistry, 
+    McpHandler
+  ],
+  exports: [MultiServerRegistry, McpHandler],
 })
 export class McpAdapterModule {
   /**
@@ -20,13 +23,14 @@ export class McpAdapterModule {
     return {
       module: McpAdapterModule,
       global: true,
+      imports: [DiscoveryModule],
       providers: [
         MultiServerRegistry,
-        McpToolHandler,
+        McpHandler
       ],
       exports: [
         MultiServerRegistry,
-        McpToolHandler,
+        McpHandler,
       ],
     };
   }

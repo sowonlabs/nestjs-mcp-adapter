@@ -15,7 +15,8 @@ export class StdioExpressAdapter extends ExpressAdapter {
         method: 'POST',
         path: this.contextPath,
         headers: {
-          'Content-Type': 'application/json'
+          'accept': 'application/json, text/event-stream',
+          'content-type': 'application/json'
         },
         body: JSON.parse(input)
       };
@@ -52,7 +53,14 @@ export class StdioExpressAdapter extends ExpressAdapter {
       callback = args[args.length - 1];
     }
     
-    return this.stdioProxy.listen(port, callback as any);
+    // StdioHttpProxy's listen returns a Promise,
+    // but ExpressAdapter.listen must return a Server object
+    this.stdioProxy.listen(port, callback as any).catch(err => {
+      console.error('Error starting StdioHttpProxy:', err);
+    });
+
+    // Return the HTTP Server object directly
+    return this.httpServer;
   }
   
   /**

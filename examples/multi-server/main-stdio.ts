@@ -10,11 +10,12 @@ async function bootstrap() {
   });
 
   await app.init();
-  await app.listen(0); // 실제로 바인딩하지 않음
+  await app.listen(0); // Not bind actually
 
   process.on('SIGINT', async () => {
     console.log('Shutting down application...');
     await app.close();
+    await adapter.close();
     process.exit(0);
   });
 

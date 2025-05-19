@@ -1,4 +1,4 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
 import { DiscoveryService, MetadataScanner, ModuleRef } from '@nestjs/core';
 import { ServerRegistry } from './server-registry';
 import { MCP_TOOL_METADATA_KEY, MCP_RESOURCE_METADATA_KEY } from '../decorators/constants';
@@ -10,23 +10,23 @@ import { McpResourceOptions } from '../decorators/mcp-resource.decorator';
  * Manages multiple MCP servers.
  */
 @Injectable()
-export class MultiServerRegistry implements OnModuleInit {
+export class MultiServerRegistry implements OnApplicationBootstrap {
   private readonly logger:Logger = new Logger(MultiServerRegistry.name);
   private readonly servers = new Map<string, ServerRegistry>();
   
   constructor(
     private readonly discoveryService: DiscoveryService,
-    private readonly metadataScanner: MetadataScanner,
-    private readonly moduleRef: ModuleRef,
+    private readonly metadataScanner: MetadataScanner
   ) {}
   
   /**
-   * Automatically register tools and resources on module initialization
+   * Automatically register tools and resources
    */
-  async onModuleInit() {
+  async onApplicationBootstrap() {
+    this.logger.debug('MultiServerRegistry.onApplicationBootstrap');
     await this.discoverAndRegisterTools();
     await this.discoverAndRegisterResources();
-    this.logger.log('servers:', this.servers);
+    // this.logger.debug('servers:', this.servers);
   }
   
   /**
@@ -68,7 +68,7 @@ export class MultiServerRegistry implements OnModuleInit {
               const metadata = Reflect.getMetadata(MCP_TOOL_METADATA_KEY, methodRef);
               
               if (metadata) {
-                const toolOptions = metadata as McpToolOptions;
+                const toolOptions = metadata as McpToolOptions<any>;
                 const serverNames = Array.isArray(toolOptions.server) 
                   ? toolOptions.server 
                   : [toolOptions.server];
