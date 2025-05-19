@@ -3,7 +3,7 @@ import { MCP_TOOL_METADATA_KEY } from './constants';
 import { z } from 'zod';
 
 /**
- * @McpTool 데코레이터 옵션 인터페이스
+ * @McpTool decorator options interface
  */
 export interface McpToolOptions {
   /**
@@ -50,8 +50,8 @@ export interface McpToolOptions {
 }
 
 /**
- * McpTool 데코레이터
- * 메소드를 MCP 도구로 등록합니다.
+ * McpTool decorator
+ * Registers a method as an MCP tool.
  */
 export function McpTool(options: McpToolOptions): CustomDecorator<string> {
   return SetMetadata(MCP_TOOL_METADATA_KEY, options);

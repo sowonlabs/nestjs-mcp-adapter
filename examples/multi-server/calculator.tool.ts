@@ -7,11 +7,11 @@ export class CalculatorToolService {
   @McpTool({
     server: 'mcp-calculator',
     name: 'calculate',
-    description: '수학 연산 수행을 수행합니다.',
+    description: 'Performs mathematical operations.',
     input: z.object({
-      a: z.number().describe('첫번째 숫자'),
-      b: z.number().describe('두번째 숫자'),
-      operation: z.string().describe('연산 타입')
+      a: z.number().describe('First number'),
+      b: z.number().describe('Second number'),
+      operation: z.string().describe('Operation type')
     }),
     annotations: {
       title: 'Calculate',
@@ -35,12 +35,12 @@ export class CalculatorToolService {
         break;
       case 'divide':
         if (b === 0) {
-          throw new Error('0으로 나눌 수 없습니다.');
+          throw new Error('Cannot divide by zero.');
         }
         result = a / b;
         break;
       default:
-        throw new Error('지원되지 않는 연산입니다.');
+        throw new Error('Unsupported operation.');
     }
     
     return {

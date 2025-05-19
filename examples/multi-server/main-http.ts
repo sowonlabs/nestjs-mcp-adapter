@@ -15,7 +15,7 @@ async function bootstrap() {
     process.exit(0);
   });
 
-  console.log('HTTP MCP 서버가 시작되었습니다. http://localhost:3000 에서 접근 가능합니다.');
+  console.log('HTTP MCP server started. Accessible at http://localhost:3000');
 }
 
 bootstrap();

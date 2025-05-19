@@ -18,7 +18,7 @@ async function bootstrap() {
     process.exit(0);
   });
 
-  console.log('STDIO MCP 서버가 시작되었습니다.');
+  console.log('STDIO MCP server started.');
 }
 
 bootstrap();

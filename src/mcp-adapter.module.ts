@@ -4,8 +4,8 @@ import { MultiServerRegistry } from './registry/multi-server-registry';
 import { McpToolHandler } from './handlers/mcp-tool-handler';
 
 /**
- * MCP 어댑터 모듈
- * NestJS 애플리케이션에서 MCP 서버 기능을 제공합니다.
+ * MCP adapter module
+ * Provides MCP server functionality in a NestJS application.
  */
 @Module({
   imports: [DiscoveryModule],
@@ -14,7 +14,7 @@ import { McpToolHandler } from './handlers/mcp-tool-handler';
 })
 export class McpAdapterModule {
   /**
-   * 전역 모듈로 등록
+   * Register as a global module
    */
   static forRoot(): DynamicModule {
     return {

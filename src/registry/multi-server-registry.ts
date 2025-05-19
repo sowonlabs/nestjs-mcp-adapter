@@ -6,8 +6,8 @@ import { McpToolOptions } from '../decorators/mcp-tool.decorator';
 import { McpResourceOptions } from '../decorators/mcp-resource.decorator';
 
 /**
- * 다중 서버 레지스트리
- * 여러 MCP 서버를 관리합니다.
+ * Multi-server registry
+ * Manages multiple MCP servers.
  */
 @Injectable()
 export class MultiServerRegistry implements OnModuleInit {
@@ -21,7 +21,7 @@ export class MultiServerRegistry implements OnModuleInit {
   ) {}
   
   /**
-   * 모듈 초기화시 도구와 리소스를 자동 등록
+   * Automatically register tools and resources on module initialization
    */
   async onModuleInit() {
     await this.discoverAndRegisterTools();
@@ -30,8 +30,8 @@ export class MultiServerRegistry implements OnModuleInit {
   }
   
   /**
-   * 서버 레지스트리 가져오기
-   * 없으면 새로 생성
+   * Get server registry
+   * Create if not exists
    */
   getServerRegistry(serverName: string): ServerRegistry {
     if (!this.servers.has(serverName)) {
@@ -41,14 +41,14 @@ export class MultiServerRegistry implements OnModuleInit {
   }
   
   /**
-   * 모든 서버 이름 가져오기
+   * Get all server names
    */
   getServerNames(): string[] {
     return Array.from(this.servers.keys());
   }
   
   /**
-   * @McpTool 데코레이터를 사용한 도구 발견 및 등록
+   * Discover and register tools using @McpTool decorator
    */
   private async discoverAndRegisterTools() {
     const providers = this.discoveryService.getProviders();
@@ -74,7 +74,7 @@ export class MultiServerRegistry implements OnModuleInit {
                   : [toolOptions.server];
                 const toolName = toolOptions.name;
                 
-                // 각 서버에 도구 등록
+                // Register tool for each server
                 for (const serverName of serverNames) {
                   const serverRegistry = this.getServerRegistry(serverName);
                   serverRegistry.registerTool(toolName, toolOptions, methodRef.bind(instance));
@@ -87,7 +87,7 @@ export class MultiServerRegistry implements OnModuleInit {
   }
   
   /**
-   * @McpResource 데코레이터를 사용한 리소스 발견 및 등록
+   * Discover and register resources using @McpResource decorator
    */
   private async discoverAndRegisterResources() {
     const providers = this.discoveryService.getProviders();
@@ -113,7 +113,7 @@ export class MultiServerRegistry implements OnModuleInit {
                   : [resourceOptions.server];
                 const resourceUri = resourceOptions.uri;
                 
-                // 각 서버에 리소스 등록
+                // Register resource for each server
                 for (const serverName of serverNames) {
                   const serverRegistry = this.getServerRegistry(serverName);
                   serverRegistry.registerResource(resourceUri, resourceOptions, methodRef.bind(instance));

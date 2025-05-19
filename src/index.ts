@@ -1,21 +1,21 @@
-// 데코레이터
+// Decorators
 export * from './decorators';
 
-// 에러 및 코드
+// Errors and codes
 export * from './errors';
 
-// 인터페이스
+// Interfaces
 export * from './interfaces';
 
-// 레지스트리
+// Registry
 export * from './registry';
 
-// 핸들러
+// Handlers
 export * from './handlers';
 
-// 모듈
+// Module
 export * from './mcp-adapter.module';
 
-// 어댑터
+// Adapter
 export * from './stdio-express-adapter';
 export * from './stdio-http-proxy';

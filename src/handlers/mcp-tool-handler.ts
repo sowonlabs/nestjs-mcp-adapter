@@ -7,30 +7,30 @@ import {
 } from '@modelcontextprotocol/sdk/types.js';
 
 /**
- * MCP 도구 요청 처리기
+ * MCP tool request handler
  */
 @Injectable()
 export class McpToolHandler {
   constructor(private readonly multiServerRegistry: MultiServerRegistry) {}
 
   /**
-   * POST 요청 처리
-   * 도구 실행 요청 처리
+   * Handle POST request
+   * Handles tool execution requests
    */
   async handlePost(serverName: string, body: JsonRpcRequest): Promise<JsonRpcResponse> {
     const registry = this.multiServerRegistry.getServerRegistry(serverName);
 
     if (!registry) {
-      throw new McpError(ErrorCode.ServerNotFound, '서버를 찾을 수 없음');
+      throw new McpError(ErrorCode.ServerNotFound, 'Server not found');
     }
 
     if (!isJSONRPCRequest(body)) {
-      throw new McpError(ErrorCode.InvalidRequest, '잘못된 JSON-RPC 요청');
+      throw new McpError(ErrorCode.InvalidRequest, 'Invalid JSON-RPC request');
     }
 
     const { jsonrpc } = body;
     if (jsonrpc !== '2.0') {
-      throw new McpError(ErrorCode.InvalidRequest, '잘못된 JSON-RPC 버전');
+      throw new McpError(ErrorCode.InvalidRequest, 'Invalid JSON-RPC version');
     }
 
     const { id, method, params } = body;
@@ -43,21 +43,21 @@ export class McpToolHandler {
     const tool = registry.getTool(method);
 
     if (!tool) {
-      throw new McpError(ErrorCode.MethodNotFound, `도구를 찾을 수 없음: ${method}`);
+      throw new McpError(ErrorCode.MethodNotFound, `Tool not found: ${method}`);
     }
 
-    // 파라미터 검증 (zod 스키마 사용)
+    // Parameter validation (using zod schema)
     const { metadata, handler } = tool;
     let validatedParams = params;
     if (metadata.input) {
       try {
         validatedParams = metadata.input.parse(params);
       } catch (error) {
-        throw new McpError(ErrorCode.InvalidParams, `잘못된 파라미터: ${error.message}`);
+        throw new McpError(ErrorCode.InvalidParams, `Invalid parameters: ${error.message}`);
       }
     }
 
-    // 도구 실행
+    // Execute tool
     const result = await handler(validatedParams);
 
     return {
@@ -68,8 +68,8 @@ export class McpToolHandler {
   }
   
   /**
-   * GET 요청 처리
-   * 서버 메타데이터 반환
+   * Handle GET request
+   * Returns server metadata
    */
   async handleGet(serverName: string): Promise<any> {
     const registry = this.multiServerRegistry.getServerRegistry(serverName);
@@ -77,8 +77,8 @@ export class McpToolHandler {
   }
 
   /**
-   * tools/list 요청 처리
-   * 도구 목록 반환
+   * Handle tools/list request
+   * Returns list of tools
    */
   protected handleToolsList(serverName: string, body: JsonRpcRequest): JsonRpcResponse {
     const registry = this.multiServerRegistry.getServerRegistry(serverName);
@@ -88,10 +88,10 @@ export class McpToolHandler {
 
     const { id } = body;
 
-    // getServerMetadata 메소드를 통해 서버 메타데이터를 가져옴
+    // Get server metadata via getServerMetadata method
     const serverMetadata = registry.getServerMetadata();
 
-    // 도구 목록만 추출
+    // Extract only the tool list
     const tools = serverMetadata.tools;
 
     return {

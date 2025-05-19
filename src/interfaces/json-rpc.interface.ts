@@ -1,5 +1,5 @@
 /**
- * JSON-RPC 요청 인터페이스
+ * JSON-RPC request interface
  */
 export interface JsonRpcRequest {
   jsonrpc: string;
@@ -9,7 +9,7 @@ export interface JsonRpcRequest {
 }
 
 /**
- * JSON-RPC 응답 인터페이스
+ * JSON-RPC response interface
  */
 export interface JsonRpcResponse {
   jsonrpc: string;
@@ -19,7 +19,7 @@ export interface JsonRpcResponse {
 }
 
 /**
- * JSON-RPC 에러 인터페이스
+ * JSON-RPC error interface
  */
 export interface JsonRpcError {
   code: number;

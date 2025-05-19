@@ -5,7 +5,7 @@ import { zodToJsonSchema } from 'zod-to-json-schema';
 import { ErrorCode, McpError } from '../errors/mcp-error';
 
 /**
- * 단일 서버의 도구와 리소스를 관리하는 레지스트리
+ * Registry for managing tools and resources of a single server
  */
 @Injectable()
 export class ServerRegistry {
@@ -13,35 +13,35 @@ export class ServerRegistry {
   private readonly resources = new Map<string, { metadata: McpResourceOptions; handler: Function }>();
   
   /**
-   * 도구 등록
+   * Register a tool
    */
   registerTool(name: string, metadata: McpToolOptions, handler: Function): void {
     this.tools.set(name, { metadata, handler });
   }
   
   /**
-   * 리소스 등록
+   * Register a resource
    */
   registerResource(uri: string, metadata: McpResourceOptions, handler: Function): void {
     this.resources.set(uri, { metadata, handler });
   }
   
   /**
-   * 도구 조회
+   * Get a tool
    */
   getTool(name: string): { metadata: McpToolOptions; handler: Function } | undefined {
     return this.tools.get(name);
   }
   
   /**
-   * 리소스 조회
+   * Get a resource
    */
   getResource(uri: string): { metadata: McpResourceOptions; handler: Function } | undefined {
     return this.resources.get(uri);
   }
   
   /**
-   * 모든 도구 조회
+   * Get all tools
    */
   getAllTools(): { name: string; metadata: McpToolOptions; handler: Function }[] {
     return Array.from(this.tools.entries()).map(([name, value]) => ({
@@ -52,7 +52,7 @@ export class ServerRegistry {
   }
   
   /**
-   * 모든 리소스 조회
+   * Get all resources
    */
   getAllResources(): { uri: string; metadata: McpResourceOptions; handler: Function }[] {
     return Array.from(this.resources.entries()).map(([uri, value]) => ({
@@ -63,7 +63,7 @@ export class ServerRegistry {
   }
   
   /**
-   * 서버 메타데이터 가져오기
+   * Get server metadata
    */
   getServerMetadata() {
     const tools = Array.from(this.tools.entries()).map(([name, { metadata }]) => ({

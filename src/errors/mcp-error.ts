@@ -13,7 +13,7 @@ export const ErrorCode = {
 }
 
 /**
- * MCP 에러 클래스
+ * MCP error class
  */
 export class McpError extends SdkMcpError {
   constructor(public readonly code: number, message: string) {

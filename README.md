@@ -1,7 +1,8 @@
 # @sowonai/nestjs-mcp-adapter
 
-이 프로젝트는 NestJS MCP(model context protocol) 서버 개발을 편리하게 돕는 라이브러리입니다.
-STDIO, HTTP 프로토콜을 지원하며, AuthGuard, Interceptor등 프로토콜에 상관없이 모든 NestJS의 기능을 활용할 수 있습니다.
+
+This project is a library that helps you conveniently develop NestJS MCP (Model Context Protocol) servers.
+It supports both STDIO and HTTP protocols, and allows you to use all features of NestJS such as AuthGuard and Interceptor regardless of the protocol.
 
 ## Installation
 
@@ -9,7 +10,8 @@ STDIO, HTTP 프로토콜을 지원하며, AuthGuard, Interceptor등 프로토콜
 npm install @sowonai/nest-mcp-adapter @nestjs/platform-express @modelcontextprotocol/sdk zod
 ```
 
-## 사용 예시
+
+## Usage Example
 
 ```typescript
 import { Injectable } from '@nestjs/common';
@@ -21,11 +23,11 @@ export class CalculatorToolService {
   @McpTool({
     server: 'mcp-cacluator',
     name: 'calculate',
-    description: '수학 연산 수행을 수행합니다.',
+    description: 'Performs mathematical operations.',
     input: z.object({
-      a: z.number().describe('첫번째 숫자'),
-      b: z.number().describe('두번째 숫자'),
-      operation: z.string().desc('연산 타입')
+      a: z.number().describe('First number'),
+      b: z.number().describe('Second number'),
+      operation: z.string().desc('Operation type')
     }),
     annotations: {
       title: 'Calculate',
@@ -54,14 +56,14 @@ export class UsersResource {
   @McpResource({
     server: 'mcp-userinfo',
     uri: 'users://{userId}/profile',
-    description: '사용자 프로필 정보',
+    description: 'User profile information',
     mimeType: 'text/plain',
   })
   async getUserProfile({ uri, userId }) {
     return {
       contents: [{
         uri,
-        text: `사용자 ID: ${userId}\n이름: 홍길동\n직책: 개발자`
+        text: `User ID: ${userId}\nName: Hong Gil-dong\nPosition: Developer`
       }]
     };
   }
@@ -116,7 +118,8 @@ export class AppModule {
 }
 ```
 
-## Http Protocol 사용 예시
+
+## Example: Using HTTP Protocol
 
 ```typescript
 import { NestFactory } from '@nestjs/core';
@@ -131,7 +134,8 @@ async function bootstrap() {
 }
 ```
 
-## Stdio Protocol 사용 예시
+
+## Example: Using STDIO Protocol
 
 ```typescript
 import { NestFactory } from '@nestjs/core';
@@ -144,7 +148,7 @@ async function bootstrap() {
   });
 
   await app.init();
-  await app.listen(0); // Not bind actually
+  await app.listen(0); // Not actually bound
 }
 ```
 

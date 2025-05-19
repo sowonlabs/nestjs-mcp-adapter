@@ -3,8 +3,8 @@ import { McpError, ErrorCode } from '../errors/mcp-error';
 import { Response } from 'express';
 
 /**
- * JSON-RPC 예외 필터
- * JSON-RPC 2.0 표준에 맞춰 에러 응답을 포맷팅함
+ * JSON-RPC exception filter
+ * Formats error responses according to the JSON-RPC 2.0 standard
  */
 @Catch()
 export class JsonRpcExceptionFilter implements ExceptionFilter {
@@ -13,10 +13,10 @@ export class JsonRpcExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest();
 
-    // 요청에서 JSON-RPC ID 추출
+    // Extract JSON-RPC ID from request
     const id = request.body?.id ?? null;
 
-    // 기본 응답 구조
+    // Default response structure
     const jsonRpcResponse = {
       jsonrpc: '2.0',
       id,
@@ -27,12 +27,12 @@ export class JsonRpcExceptionFilter implements ExceptionFilter {
       },
     };
 
-    // McpError 타입 예외 처리
+    // Handle McpError type exceptions
     if (exception instanceof McpError) {
       jsonRpcResponse.error.code = exception.code;
       jsonRpcResponse.error.message = exception.message || 'Unknown error';
 
-      // HTTP 상태 코드 설정
+      // Set HTTP status code
       let httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
       if (exception.code === ErrorCode.InvalidRequest || exception.code === ErrorCode.InvalidParams) {
         httpStatus = HttpStatus.BAD_REQUEST;

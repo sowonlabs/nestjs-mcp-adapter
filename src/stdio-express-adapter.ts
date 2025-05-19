@@ -21,12 +21,12 @@ export class StdioExpressAdapter extends ExpressAdapter {
       };
     };
 
-    // 기본 출력 변환 함수 - 표준 JSON 형식
+    // Default output transform function - standard JSON format
     const transformOutput = (responseData: any) => {
       return JSON.stringify(responseData.body);
     };
 
-    // 변환 함수를 StdioHttpProxy에 전달
+    // Pass transform functions to StdioHttpProxy
     this.stdioProxy = new StdioHttpProxy(
       this.getInstance(),
       transformInput,
@@ -35,18 +35,18 @@ export class StdioExpressAdapter extends ExpressAdapter {
   }
   
   /**
-   * HTTP 서버를 초기화합니다. 실제로 네트워크에 바인딩되지 않는 가상 서버입니다.
+   * Initializes the HTTP server. This is a virtual server that does not actually bind to the network.
    */
   public initHttpServer() {
-    // 실제 HTTP 서버 생성하지 않고 프록시의 서버를 사용
+    // Use the proxy's server instead of creating a real HTTP server
     this.httpServer = this.stdioProxy.getHttpServer();
   }
   
   /**
-   * 가상의 리스닝을 시작하고 STDIO 처리 핸들러를 설정합니다.
+   * Starts virtual listening and sets up STDIO handler.
    */
   public listen(port: any, ...args: any[]) {
-    // 마지막 인자가 함수인 경우 콜백으로 처리
+    // If the last argument is a function, treat it as a callback
     let callback: Function | undefined;
     if (args.length > 0 && typeof args[args.length - 1] === 'function') {
       callback = args[args.length - 1];
@@ -56,28 +56,28 @@ export class StdioExpressAdapter extends ExpressAdapter {
   }
   
   /**
-   * 가상 서버를 종료합니다.
+   * Closes the virtual server.
    */
   public async close() {
     this.stdioProxy.close();
   }
   
   /**
-   * 수동으로 입력을 처리합니다. 주로 테스트용으로 사용됩니다.
+   * Handles input manually. Mainly used for testing.
    */
   public handleInput(input: string) {
     this.stdioProxy.handleInput(input);
   }
 
   /**
-   * 입력 변환 함수를 교체합니다.
+   * Replaces the input transform function.
    */
   public setTransformInput(fn: (input: string) => any): void {
     this.stdioProxy.setTransformInput(fn);
   }
 
   /**
-   * 출력 변환 함수를 교체합니다.
+   * Replaces the output transform function.
    */
   public setTransformOutput(fn: (responseData: any) => string): void {
     this.stdioProxy.setTransformOutput(fn);
