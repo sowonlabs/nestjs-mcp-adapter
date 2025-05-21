@@ -17,7 +17,6 @@ It supports both STDIO and HTTP protocols, and allows you to use all features of
 npm install @sowonai/nest-mcp-adapter @nestjs/platform-express @modelcontextprotocol/sdk zod
 ```
 
-
 ## Simple Architecture
 ![](docs/simple-diagram.png)
 
@@ -101,14 +100,21 @@ export class McpGreetController { // Renamed for clarity
 
 ```typescript
 import { Module } from '@nestjs/common';
-import { McpAdapterModule } from '@sowonai/nest-mcp-adapter'; // Ensure this path is correct
+import { McpAdapterModule, McpModuleOptions } from '@sowonai/nest-mcp-adapter'; // Ensure this path is correct
 import { GreetToolService } from './greet.tool'; // Adjust path as needed
 import { McpGreetController } from './mcp.controller'; // Adjust path as needed
 import { AuthGuard } from './auth.guard'; // Adjust path as needed
 
 @Module({
   imports: [
-    McpAdapterModule.forRoot(), // Basic initialization
+    McpAdapterModule.forRoot({
+      servers: {
+        'mcp-greet': {
+          version: '1.0.0',
+          instructions: 'Welcome to the Greet Server! Use the helloMessage tool to get a greeting.',
+        }
+      }
+    }),
   ],
   controllers: [
     McpGreetController,
@@ -246,15 +252,48 @@ export class McpMultiServerController { // Renamed for clarity
 
 ```typescript
 import { Module } from '@nestjs/common';
-import { McpAdapterModule } from '@sowonai/nest-mcp-adapter';
+import { McpAdapterModule, McpModuleOptions } from '@sowonai/nest-mcp-adapter';
 import { AuthGuard } from './auth.guard'; // Adjust path
 import { CalculatorToolService } from './calculator.tool'; // Adjust path
 import { UsersResourceService } from './users.resource'; // Adjust path
 import { McpMultiServerController } from './mcp.controller'; // Adjust path
 
+// Define options for the McpAdapterModule, configuring multiple servers
+const mcpMultiServerOptions: McpModuleOptions = {
+  servers: {
+    'mcp-calculator': {
+      version: '1.2.0-calc',
+      instructions: 'Calculator server: supports add, subtract, multiply, divide.',
+    },
+    'mcp-userinfo': {
+      version: '0.8.0-user',
+      instructions: 'User information server: provides user profiles.',
+    },
+    'mcp-other': {
+      version: '0.5.0-other',
+      instructions: 'A shared server for miscellaneous tools and resources.',
+    },
+  },
+};
+
 @Module({
   imports: [
-    McpAdapterModule.forRoot(), // Or McpAdapterModule.forRootAsync() for advanced configuration
+    McpAdapterModule.forRoot({
+      servers: {
+        'mcp-calculator': {
+          version: '1.2.0-calc',
+            instructions: 'Calculator server: supports add, subtract, multiply, divide.',
+          },
+          'mcp-userinfo': {
+            version: '0.8.0-user',
+            instructions: 'User information server: provides user profiles.',
+          },
+          'mcp-other': {
+            version: '0.5.0-other',
+            instructions: 'A shared server for miscellaneous tools and resources.',
+          },
+      },
+    }),
   ],
   controllers: [
     McpMultiServerController,

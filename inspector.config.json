@@ -2,7 +2,7 @@
   "mcpServers": {
     "greet": {
       "command": "npx",
-      "args": ["ts-node", "/Users/doha/git/nestjs-mcp-adapter/examples/greet/main-stdio.ts"]
+      "args": ["ts-node", "./examples/greet/main-stdio.ts"]
     }
   }
 }

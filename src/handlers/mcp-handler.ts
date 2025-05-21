@@ -1,4 +1,4 @@
-import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
+import { Injectable, Logger, Inject } from '@nestjs/common';
 import { MultiServerRegistry } from '../registry/multi-server-registry';
 import { JsonRpcRequest, JsonRpcResponse } from '../interfaces/json-rpc.interface';
 import { Request, Response } from 'express'; // Response는 직접 사용하지 않으므로 제거
@@ -10,6 +10,8 @@ import {
   ToolAnnotations as McpToolAnnotations
 } from '@modelcontextprotocol/sdk/types.js';
 import { zodToJsonSchema } from 'zod-to-json-schema';
+import { McpModuleOptions } from '../interfaces';
+import { MCP_MODULE_OPTIONS } from '../decorators/constants';
 
 // Define types directly (ensure compatibility with the actual SDK)
 type McpRequest<T extends string = string> = JsonRpcRequest & {
@@ -28,7 +30,10 @@ type McpResponse<T extends string = string> = JsonRpcResponse & {
 export class McpHandler {
   private readonly logger:Logger = new Logger(McpHandler.name);
 
-  constructor(private readonly multiServerRegistry: MultiServerRegistry) {}
+  constructor(
+    private readonly multiServerRegistry: MultiServerRegistry,
+    @Inject(MCP_MODULE_OPTIONS) private readonly options: McpModuleOptions,
+  ) {}
 
   async handleRequest(serverName: string, req: Request, res: Response, body: any): Promise<JsonRpcResponse | null> {
     // Check for JSON-RPC notification (if id is null or missing)
@@ -79,7 +84,15 @@ export class McpHandler {
   }
 
   async handleInitializeRequest(serverName: string, request: McpRequest<'initialize'>): Promise<McpResponse<'initialize'>['result']> {
-    // InitializeRequestSchema.parse(request.params); // Validate client parameters if necessary
+    let version;
+    let instructions;
+
+    if (this.options.servers && this.options.servers[serverName]) {
+      const serverConfig = this.options.servers[serverName];
+      version = serverConfig.version || "0.1.0";
+      instructions = serverConfig.instructions || '';
+    }
+
     return {
       protocolVersion: "2024-11-05", // for Claude Desktop
       capabilities: {
@@ -90,9 +103,9 @@ export class McpHandler {
       },
       serverInfo: {
         name: serverName,
-        version: "0.1.0",
+        version: version,
       },
-      instructions: ''
+      instructions: instructions
     };
   }
 

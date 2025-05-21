@@ -1,5 +1,5 @@
 import { Controller, Post, Get, Body, UseGuards, UseFilters, Req, Res, HttpCode } from '@nestjs/common';
-import { McpHandler } from '../../src/handlers/mcp-handler.service';
+import { McpHandler } from '../../src/handlers/mcp-handler';
 import { JsonRpcRequest } from '../../src/interfaces/json-rpc.interface';
 import { AuthGuard } from './auth.guard';
 import { JsonRpcExceptionFilter } from '../../src/filters/json-rpc-exception.filter';

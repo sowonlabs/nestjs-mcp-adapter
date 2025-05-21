@@ -4,7 +4,7 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const useLog = false;
-  const adapter = new StdioExpressAdapter('/mcp/mcp-calculator');
+  const adapter = new StdioExpressAdapter('/mcp/mcp-other');
   const app = await NestFactory.create(AppModule, adapter, {
     logger: useLog ? ['error', 'warn', 'log'] : false,
   });

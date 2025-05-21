@@ -6,7 +6,14 @@ import { AuthGuard } from './auth.guard';
 
 @Module({
   imports: [
-    McpAdapterModule.forRoot(),
+    McpAdapterModule.forRoot({
+      servers: {
+        'mcp-greet': {
+          version: '1.0.0',
+          instructions: 'Welcome to the Greet Server! Use the helloMessage tool to get a greeting.',
+        }
+      }
+    }),
   ],
   controllers: [
     McpController,
