@@ -1,6 +1,5 @@
 # @sowonai/nestjs-mcp-adapter
 
-
 This project is a library that helps you conveniently develop NestJS MCP (Model Context Protocol) servers.
 It supports both STDIO and HTTP protocols, and allows you to use all features of NestJS such as AuthGuard and Interceptor regardless of the protocol.
 
@@ -28,13 +27,13 @@ This example demonstrates how to set up a single MCP server. We'll use a simple 
 
 ```typescript
 import { Injectable } from '@nestjs/common';
-import { McpTool } from '@sowonai/nest-mcp-adapter'; // Ensure this path is correct for your project
+import { McpTool } from '@sowonai/nest-mcp-adapter';
 import { z } from 'zod';
 
 @Injectable()
 export class GreetToolService {
   @McpTool({
-    server: 'mcp-greet', // Single server name
+    server: 'mcp-greet',
     name: 'helloMessage',
     description: 'Say hello to the user with a custom message.',
     input: {
@@ -60,16 +59,14 @@ This controller handles requests for the `mcp-greet` server.
 
 ```typescript
 import { Controller, Post, Body, UseGuards, Req, Res, HttpCode, UseFilters } from '@nestjs/common';
-import { McpHandler } from '@sowonai/nest-mcp-adapter'; // Ensure this path is correct
-import { JsonRpcRequest } from '@sowonai/nest-mcp-adapter'; // Ensure this path is correct
-import { AuthGuard } from './auth.guard'; // Example AuthGuard, adjust path as needed
-import { JsonRpcExceptionFilter } from '@sowonai/nest-mcp-adapter'; // Ensure this path is correct
+import { McpHandler, JsonRpcRequest, JsonRpcExceptionFilter } from '@sowonai/nest-mcp-adapter';
+import { AuthGuard } from './auth.guard';
 import { Request, Response } from 'express';
 
 @Controller('mcp') // Base path for MCP requests
 @UseGuards(AuthGuard)
 @UseFilters(JsonRpcExceptionFilter)
-export class McpGreetController { // Renamed for clarity
+export class McpGreetController {
   constructor(
     private readonly mcpHandler: McpHandler
   ) {}
@@ -100,10 +97,10 @@ export class McpGreetController { // Renamed for clarity
 
 ```typescript
 import { Module } from '@nestjs/common';
-import { McpAdapterModule, McpModuleOptions } from '@sowonai/nest-mcp-adapter'; // Ensure this path is correct
-import { GreetToolService } from './greet.tool'; // Adjust path as needed
-import { McpGreetController } from './mcp.controller'; // Adjust path as needed
-import { AuthGuard } from './auth.guard'; // Adjust path as needed
+import { McpAdapterModule, McpModuleOptions } from '@sowonai/nest-mcp-adapter';
+import { GreetToolService } from './greet.tool';
+import { McpGreetController } from './mcp.controller';
+import { AuthGuard } from './auth.guard';
 
 @Module({
   imports: [
@@ -214,14 +211,14 @@ This controller can handle requests for different MCP servers by using a URL par
 import { Controller, Post, Param, Body, UseGuards, Req, Res, HttpCode, UseFilters } from '@nestjs/common';
 import { McpHandler } from '@sowonai/nest-mcp-adapter';
 import { JsonRpcRequest } from '@sowonai/nest-mcp-adapter';
-import { AuthGuard } from './auth.guard'; // Adjust path as needed
+import { AuthGuard } from './auth.guard';
 import { JsonRpcExceptionFilter } from '@sowonai/nest-mcp-adapter';
 import { Request, Response } from 'express';
 
-@Controller('mcp') // Base path
+@Controller('mcp')
 @UseGuards(AuthGuard)
 @UseFilters(JsonRpcExceptionFilter)
-export class McpMultiServerController { // Renamed for clarity
+export class McpMultiServerController {
   constructor(
     private readonly mcpHandler: McpHandler
   ) {}
@@ -253,28 +250,10 @@ export class McpMultiServerController { // Renamed for clarity
 ```typescript
 import { Module } from '@nestjs/common';
 import { McpAdapterModule, McpModuleOptions } from '@sowonai/nest-mcp-adapter';
-import { AuthGuard } from './auth.guard'; // Adjust path
-import { CalculatorToolService } from './calculator.tool'; // Adjust path
-import { UsersResourceService } from './users.resource'; // Adjust path
-import { McpMultiServerController } from './mcp.controller'; // Adjust path
-
-// Define options for the McpAdapterModule, configuring multiple servers
-const mcpMultiServerOptions: McpModuleOptions = {
-  servers: {
-    'mcp-calculator': {
-      version: '1.2.0-calc',
-      instructions: 'Calculator server: supports add, subtract, multiply, divide.',
-    },
-    'mcp-userinfo': {
-      version: '0.8.0-user',
-      instructions: 'User information server: provides user profiles.',
-    },
-    'mcp-other': {
-      version: '0.5.0-other',
-      instructions: 'A shared server for miscellaneous tools and resources.',
-    },
-  },
-};
+import { AuthGuard } from './auth.guard';
+import { CalculatorToolService } from './calculator.tool';
+import { UsersResourceService } from './users.resource';
+import { McpMultiServerController } from './mcp.controller';
 
 @Module({
   imports: [
@@ -282,16 +261,16 @@ const mcpMultiServerOptions: McpModuleOptions = {
       servers: {
         'mcp-calculator': {
           version: '1.2.0-calc',
-            instructions: 'Calculator server: supports add, subtract, multiply, divide.',
-          },
-          'mcp-userinfo': {
-            version: '0.8.0-user',
-            instructions: 'User information server: provides user profiles.',
-          },
-          'mcp-other': {
-            version: '0.5.0-other',
-            instructions: 'A shared server for miscellaneous tools and resources.',
-          },
+          instructions: 'Calculator server: supports add, subtract, multiply, divide.',
+        },
+        'mcp-userinfo': {
+          version: '0.8.0-user',
+          instructions: 'User information server: provides user profiles.',
+        },
+        'mcp-other': {
+          version: '0.5.0-other',
+          instructions: 'A shared server for miscellaneous tools and resources.',
+        },
       },
     }),
   ],
@@ -304,7 +283,7 @@ const mcpMultiServerOptions: McpModuleOptions = {
     UsersResourceService,
   ],
 })
-export class AppModuleMultiServer {} // Renamed for clarity
+export class AppModuleMultiServer {}
 ```
 
 ## Example: Using HTTP Protocol
