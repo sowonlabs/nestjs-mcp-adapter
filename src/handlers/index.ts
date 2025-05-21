@@ -1,1 +1,1 @@
-export * from './mcp-tool-handler';
+export * from './mcp-handler';

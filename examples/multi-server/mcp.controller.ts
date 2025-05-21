@@ -1,29 +1,34 @@
-import { Controller, Post, Get, Param, Body, UseGuards, UseFilters } from '@nestjs/common';
-import { McpToolHandler } from '../../src/handlers/mcp-tool-handler';
+import { Controller, Post, Get, Param, Body, UseGuards, Req, Res, HttpCode, UseFilters, UseInterceptors } from '@nestjs/common';
+import { McpHandler } from '../../src/handlers/mcp-handler';
 import { JsonRpcRequest } from '../../src/interfaces/json-rpc.interface';
 import { JsonRpcExceptionFilter } from '../../src/filters/json-rpc-exception.filter';
 import { AuthGuard } from './auth.guard';
+import { Request, Response } from 'express';
+import { LoggingInterceptor } from './logging.interceptor';
 
 @Controller('mcp')
 @UseGuards(AuthGuard)
 @UseFilters(JsonRpcExceptionFilter)
+// @UseInterceptors(LoggingInterceptor)
 export class McpController {
   constructor(
-    private readonly mcpToolHandler: McpToolHandler
+    private readonly mcpHandler: McpHandler
   ) {}
 
   @Post(':serverName')
+  @HttpCode(202)
   async handlePost(
     @Param('serverName') serverName: string = 'default',
-    @Body() body: JsonRpcRequest,
+    @Req() req: Request, @Res() res: Response, @Body() body: any
   ) {
-    return this.mcpToolHandler.handlePost(serverName, body);
-  }
+    const result = await this.mcpHandler.handleRequest(serverName, req, res, body);
 
-  @Get(':serverName')
-  async handleGet(
-    @Param('serverName') serverName: string = 'default'
-  ) {
-    return this.mcpToolHandler.handleGet(serverName);
+    // If it's a notification request or the response is null, send an empty response
+    if (result === null) {
+      return res.end();
+    }
+
+    // Response for a regular request
+    return res.json(result);
   }
 }

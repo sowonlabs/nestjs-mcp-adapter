@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "greet": {
+      "command": "npx",
+      "args": ["ts-node", "./examples/greet/main-stdio.ts"]
+    }
+  }
+}

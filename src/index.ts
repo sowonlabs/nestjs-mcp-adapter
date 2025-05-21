@@ -19,3 +19,5 @@ export * from './mcp-adapter.module';
 // Adapter
 export * from './stdio-express-adapter';
 export * from './stdio-http-proxy';
+
+export * from './filters';

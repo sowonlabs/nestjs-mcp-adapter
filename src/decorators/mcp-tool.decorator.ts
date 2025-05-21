@@ -1,11 +1,11 @@
 import { SetMetadata, CustomDecorator } from '@nestjs/common';
 import { MCP_TOOL_METADATA_KEY } from './constants';
-import { z } from 'zod';
+import { z, ZodRawShape } from 'zod';
 
 /**
  * @McpTool decorator options interface
  */
-export interface McpToolOptions {
+export interface McpToolOptions<Args extends ZodRawShape> {
   /**
    * MCP Server name
    */
@@ -21,7 +21,7 @@ export interface McpToolOptions {
   /**
    * JSON Schema for the tool's parameters (inputSchema in specification)
    */
-  input: z.ZodTypeAny;
+  input: Args;
   /**
    * Optional hints about tool behavior
    */
@@ -53,6 +53,6 @@ export interface McpToolOptions {
  * McpTool decorator
  * Registers a method as an MCP tool.
  */
-export function McpTool(options: McpToolOptions): CustomDecorator<string> {
+export function McpTool<Args extends ZodRawShape>(options: McpToolOptions<Args>): CustomDecorator<string> {
   return SetMetadata(MCP_TOOL_METADATA_KEY, options);
 }

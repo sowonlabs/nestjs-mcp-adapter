@@ -1,24 +1,29 @@
-import { Controller, Post, Get, Body, UseGuards, UseFilters } from '@nestjs/common';
-import { McpToolHandler } from '../../src/handlers/mcp-tool-handler';
+import { Controller, Post, Get, Body, UseGuards, UseFilters, Req, Res, HttpCode } from '@nestjs/common';
+import { McpHandler } from '../../src/handlers/mcp-handler';
 import { JsonRpcRequest } from '../../src/interfaces/json-rpc.interface';
 import { AuthGuard } from './auth.guard';
 import { JsonRpcExceptionFilter } from '../../src/filters/json-rpc-exception.filter';
+import { Request, Response } from 'express';
 
 @Controller('mcp')
 @UseGuards(AuthGuard)
 @UseFilters(JsonRpcExceptionFilter)
 export class McpController {
   constructor(
-    private readonly mcpToolHandler: McpToolHandler
+    private readonly mcpHandler: McpHandler
   ) {}
 
   @Post()
-  async handlePost(@Body() body: JsonRpcRequest) {
-    return this.mcpToolHandler.handlePost('mcp-greet', body);
-  }
+  @HttpCode(202)
+  async handlePost(@Req() req: Request, @Res() res: Response, @Body() body: JsonRpcRequest) {
+    const result = await this.mcpHandler.handleRequest('mcp-greet', req, res, body);
 
-  @Get()
-  async handleGet() {
-    return this.mcpToolHandler.handleGet('mcp-greet');
+    // If it's a notification request or the response is null, send an empty response
+    if (result === null) {
+      return res.end();
+    }
+
+    // Response for a regular request
+    return res.json(result);
   }
 }

@@ -6,14 +6,15 @@ async function bootstrap() {
   const useLog = false;
   const adapter = new StdioExpressAdapter('/mcp');
   const app = await NestFactory.create(AppModule, adapter, {
-    logger: useLog ? ['error', 'warn', 'log'] : false,
+    logger: useLog ? ['error', 'warn', 'log', 'debug'] : false,
   });
 
   await app.init();
-  await app.listen(0); // 실제로 바인딩하지 않음
+  await app.listen(0); // Not bind actually
 
   process.on('SIGINT', async () => {
     console.log('Shutting down application...');
+    await adapter.close();
     await app.close();
     process.exit(0);
   });

@@ -9,13 +9,13 @@ import { ErrorCode, McpError } from '../errors/mcp-error';
  */
 @Injectable()
 export class ServerRegistry {
-  private readonly tools = new Map<string, { metadata: McpToolOptions; handler: Function }>();
+  private readonly tools = new Map<string, { metadata: McpToolOptions<any>; handler: Function }>();
   private readonly resources = new Map<string, { metadata: McpResourceOptions; handler: Function }>();
   
   /**
    * Register a tool
    */
-  registerTool(name: string, metadata: McpToolOptions, handler: Function): void {
+  registerTool(name: string, metadata: McpToolOptions<any>, handler: Function): void {
     this.tools.set(name, { metadata, handler });
   }
   
@@ -29,7 +29,7 @@ export class ServerRegistry {
   /**
    * Get a tool
    */
-  getTool(name: string): { metadata: McpToolOptions; handler: Function } | undefined {
+  getTool(name: string): { metadata: McpToolOptions<any>; handler: Function } | undefined {
     return this.tools.get(name);
   }
   
@@ -43,7 +43,7 @@ export class ServerRegistry {
   /**
    * Get all tools
    */
-  getAllTools(): { name: string; metadata: McpToolOptions; handler: Function }[] {
+  getAllTools(): { name: string; metadata: McpToolOptions<any>; handler: Function }[] {
     return Array.from(this.tools.entries()).map(([name, value]) => ({
       name,
       metadata: value.metadata,

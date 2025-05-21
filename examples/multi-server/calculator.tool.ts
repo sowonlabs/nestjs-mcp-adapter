@@ -5,14 +5,14 @@ import { z } from 'zod';
 @Injectable()
 export class CalculatorToolService {
   @McpTool({
-    server: 'mcp-calculator',
+    server: ['mcp-calculator', 'mcp-other'],
     name: 'calculate',
     description: 'Performs mathematical operations.',
-    input: z.object({
+    input: {
       a: z.number().describe('First number'),
       b: z.number().describe('Second number'),
       operation: z.string().describe('Operation type')
-    }),
+    },
     annotations: {
       title: 'Calculate',
       readOnlyHint: true,
