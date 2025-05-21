@@ -3,6 +3,9 @@
 This project is a library that helps you conveniently develop NestJS MCP (Model Context Protocol) servers.
 It supports both STDIO and HTTP protocols, and allows you to use all features of NestJS such as AuthGuard and Interceptor regardless of the protocol.
 
+[![X](https://img.shields.io/badge/X-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/dohapark81)
+[![Threads](https://img.shields.io/badge/Threads-000000?style=for-the-badge&logo=threads&logoColor=white)](https://www.threads.com/@dohapark81)
+
 ## Features
 - **MCP Tool**: Easily create MCP tools with decorators.
 - **(TOBE)MCP Resource**: Create MCP resources with decorators.
