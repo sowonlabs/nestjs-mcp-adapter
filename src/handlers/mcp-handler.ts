@@ -1,7 +1,7 @@
 import { Injectable, Logger, Inject } from '@nestjs/common';
 import { MultiServerRegistry } from '@registry/multi-server-registry';
 import { JsonRpcRequest, JsonRpcResponse } from '@interfaces/json-rpc.interface';
-import { Request, Response } from 'express'; // Response는 직접 사용하지 않으므로 제거
+import { Request, Response } from 'express';
 import { McpError, ErrorCode } from "@errors";
 import { z } from 'zod';
 import {
@@ -110,11 +110,7 @@ export class McpHandler {
   }
 
   private async handlePingRequest(): Promise<McpResponse<'ping'>['result']> {
-    // ping 요청에 대한 응답으로 간단한 객체 반환
-    return {
-      timestamp: new Date().toISOString(),
-      status: "ok"
-    };
+    return {};
   }
 
   private async handleToolsListRequest(serverName: string, request: McpRequest<'tools/list'>): Promise<McpResponse<'tools/list'>['result']> { 
@@ -122,12 +118,11 @@ export class McpHandler {
     const toolInfos = registry.getAllTools();
 
     const mcpTools: Tool[] = toolInfos.map((toolInfo) => {
-      const { name: toolKey, metadata } = toolInfo; // name을 toolKey로 변경하여 metadata.name과 구분
+      const { name: toolKey, metadata } = toolInfo;
       const { name: metaName, description, input: zodInputSchema, annotations: toolAnnotations } = metadata; // inputSchema -> input
       
       let jsonSchema: any = {};
       if (zodInputSchema) {
-        // zodInputSchema가 ZodRawShape이므로, z.object()로 감싸서 zodToJsonSchema에 전달
         jsonSchema = zodToJsonSchema(z.object(zodInputSchema), { target: 'openApi3' });
       }
 
@@ -138,7 +133,7 @@ export class McpHandler {
           type: jsonSchema.type || 'object',
           properties: jsonSchema.properties || {},
           required: jsonSchema.required || [],
-          description: jsonSchema.description, // 스키마 최상위 설명
+          description: jsonSchema.description,
         },
         annotations: {},
       };
@@ -149,7 +144,6 @@ export class McpHandler {
         for (const key in shape) {
           const field = shape[key] as z.ZodTypeAny;
           if (field.description && mcpTool.inputSchema.properties && mcpTool.inputSchema.properties[key]) {
-            // zodToJsonSchema가 이미 description을 포함시켰는지 확인 후, 없다면 할당
             if (!(mcpTool.inputSchema.properties[key] as any).description) {
                (mcpTool.inputSchema.properties[key] as any).description = field.description;
             }

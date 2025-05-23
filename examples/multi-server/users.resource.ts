@@ -13,7 +13,7 @@ export class UsersResourceService {
     return {
       contents: [{
         uri,
-        text: `User ID: ${userId}\nName: Hong Gil-dong\nPosition: Developer`
+        text: `User ID: ${userId}\nName: Neo\nPosition: Programmer`
       }]
     };
   }

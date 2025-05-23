@@ -16,12 +16,12 @@ export class McpController {
   @Post()
   @HttpCode(202)
   async handlePost(
-    @Param('serverName') serverName: string, // @Param 데코레이터로 serverName 주입
+    @Param('serverName') serverName: string, // Inject serverName using @Param decorator
     @Req() req: Request, 
     @Res() res: Response, 
     @Body() body: JsonRpcRequest
   ) {
-    // 주입된 serverName 사용
+    // Use the injected serverName
     const result = await this.mcpHandler.handleRequest(serverName, req, res, body);
 
     // If it's a notification request or the response is null, send an empty response

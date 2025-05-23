@@ -23,7 +23,7 @@ export class MultiServerRegistry implements OnApplicationBootstrap {
   ) {}
 
   async onApplicationBootstrap() {
-    // McpModuleOptions에 정의된 서버들에 대해 ServerRegistry 미리 생성
+    // Pre-create ServerRegistry for servers defined in McpModuleOptions
     if (this.options.servers) {
       for (const serverName in this.options.servers) {
         // eslint-disable-next-line no-prototype-builtins
@@ -172,9 +172,6 @@ Example (app.module.ts):
                 for (const serverName of serverNames) {
                   if (!this.servers.has(serverName)) {
                     const errorMessage = `
-================================================================================
-[MCP Setup Error - Resource Registration]
---------------------------------------------------------------------------------
 Server '${serverName}' is not defined.
 Cannot register resource with URI '${resourceOptions.uri}' (Component: ${componentName}, Method: ${methodName}).
 
@@ -189,8 +186,6 @@ Example (app.module.ts):
       // ... other configured servers
     }
   })
---------------------------------------------------------------------------------
-================================================================================
 `;
                     throw new Error(errorMessage);
                   }

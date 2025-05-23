@@ -306,7 +306,6 @@ async function bootstrap() {
 }
 ```
 
-
 ## Example: Using STDIO Protocol
 
 ```typescript

@@ -6,3 +6,4 @@ sowonai-*.tgz
 credentials.json
 tsconfig.build.tsbuildinfo
 .env*
+.DS_Store

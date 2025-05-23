@@ -27,7 +27,7 @@ import { HelloController } from './hello.controller';
   ],
   controllers: [
     McpController,
-    HelloController, // HelloController 추가
+    HelloController, // Added HelloController
   ],
   providers: [
     CalculatorToolService,

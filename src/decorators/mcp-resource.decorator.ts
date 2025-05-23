@@ -5,7 +5,7 @@ import { MCP_RESOURCE_METADATA_KEY } from './constants';
  * @McpResource decorator options interface
  */
 export interface McpResourceOptions {
-  server: string | string[]; // Changed to string or string array
+  server: string | string[];
   uri: string;
   description: string;
   mimeType: string;
