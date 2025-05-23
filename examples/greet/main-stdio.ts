@@ -10,11 +10,19 @@ async function bootstrap() {
     logger: useLog ? logger : false,
   });
 
-  process.on('SIGINT', async () => {
-    console.log('Shutting down application...');
+  const cleanup = async () => {
     await adapter.close();
     await app.close();
+  };
+
+  const shutdownHandler = async (signal: string) => {
+    logger.log(`Shutting down application... (${signal})`);
+    await cleanup();
     process.exit(0);
+  };
+
+  ['SIGTERM', 'SIGINT'].forEach(signal => {
+    process.on(signal, () => shutdownHandler(signal));
   });
 
   await app.init();
