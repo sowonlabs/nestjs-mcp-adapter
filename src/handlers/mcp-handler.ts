@@ -132,7 +132,7 @@ export class McpHandler {
       }
 
       const mcpTool: Tool = {
-        name: metaName || toolKey, // McpToolOptions에 정의된 name을 우선 사용, 없으면 등록 시 사용된 key
+        name: metaName || toolKey,
         description: description || 'No description provided',
         inputSchema: {
           type: jsonSchema.type || 'object',
@@ -142,28 +142,10 @@ export class McpHandler {
         },
         annotations: {},
       };
-
-      // Annotations 매핑 (존재하는 경우에만)
-      if (toolAnnotations) {
-        const currentAnnotations: McpToolAnnotations = {};
-        if (toolAnnotations.title) currentAnnotations.title = toolAnnotations.title;
-        if (toolAnnotations.readOnlyHint) currentAnnotations.readOnlyHint = toolAnnotations.readOnlyHint;
-        // desctructiveHint 오타 수정
-        if (toolAnnotations.desctructiveHint) currentAnnotations.destructiveHint = toolAnnotations.desctructiveHint; 
-        if (toolAnnotations.idempotentHint) currentAnnotations.idempotentHint = toolAnnotations.idempotentHint;
-        if (toolAnnotations.openWorldHint) currentAnnotations.openWorldHint = toolAnnotations.openWorldHint;
-        // MCP 표준 어노테이션 추가 (예시, 실제 SDK에 있는 어노테이션 확인 필요)
-        // if (toolAnnotations.requiresReviewHint) currentAnnotations.requiresReviewHint = toolAnnotations.requiresReviewHint;
-        // if (toolAnnotations.outputHint) currentAnnotations.outputHint = toolAnnotations.outputHint;
-        mcpTool.annotations = currentAnnotations;
-      }
       
-      // inputSchema의 각 속성에 대한 설명 추가 (zod-to-json-schema가 이미 처리)
-      // zod-to-json-schema v3+ 에서는 ZodObject의 .describe()가 JSON 스키마의 description으로 자동 변환됩니다.
-      // 개별 속성의 .describe()도 해당 속성의 description으로 변환됩니다.
-      // 따라서 아래 로직은 일반적으로 필요하지 않지만, 특정 케이스를 위해 남겨둘 수 있습니다.
-      if (zodInputSchema && jsonSchema.properties) { // zodInputSchema는 ZodRawShape
-        const shape = zodInputSchema; // z.object(zodInputSchema).shape 대신 직접 사용
+      // inputSchema description
+      if (zodInputSchema && jsonSchema.properties) {
+        const shape = zodInputSchema;
         for (const key in shape) {
           const field = shape[key] as z.ZodTypeAny;
           if (field.description && mcpTool.inputSchema.properties && mcpTool.inputSchema.properties[key]) {
@@ -174,6 +156,18 @@ export class McpHandler {
           }
         }
       }
+
+      // annotations
+      if (toolAnnotations) {
+        const currentAnnotations: McpToolAnnotations = {};
+        if (toolAnnotations.title) currentAnnotations.title = toolAnnotations.title;
+        if (toolAnnotations.readOnlyHint) currentAnnotations.readOnlyHint = toolAnnotations.readOnlyHint;
+        if (toolAnnotations.desctructiveHint) currentAnnotations.destructiveHint = toolAnnotations.desctructiveHint; 
+        if (toolAnnotations.idempotentHint) currentAnnotations.idempotentHint = toolAnnotations.idempotentHint;
+        if (toolAnnotations.openWorldHint) currentAnnotations.openWorldHint = toolAnnotations.openWorldHint;
+        mcpTool.annotations = currentAnnotations;
+      }
+
       return mcpTool;
     });
 

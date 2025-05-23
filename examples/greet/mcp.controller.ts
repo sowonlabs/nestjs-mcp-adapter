@@ -14,7 +14,7 @@ export class McpController {
   @Post()
   @HttpCode(202)
   async handlePost(@Req() req: Request, @Res() res: Response, @Body() body: JsonRpcRequest) {
-    const result = await this.mcpHandler.handleRequest('mcp-greet', req, res, body);
+    const result = await this.mcpHandler.handleRequest('greet', req, res, body);
 
     // If it's a notification request or the response is null, send an empty response
     if (result === null) {

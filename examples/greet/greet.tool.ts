@@ -41,7 +41,7 @@ export class GreetToolService {
   }
 
   @McpTool({
-    server: 'mcp-greet',
+    server: 'greet',
     name: `listMessages`,
     description: 'Search and retrieve Gmail messages for the user. By default, returns the 10 most recent emails.',
     input: {

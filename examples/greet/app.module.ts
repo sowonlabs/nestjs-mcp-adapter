@@ -10,7 +10,7 @@ import { McpController } from './mcp.controller';
       servers: {
         'greet': {
           version: '1.0.0',
-          instructions: 'Welcome to the Greet Server! Use the helloMessage tool to get a greeting.',
+          instructions: 'Welcome to the Greet Server! Use the hello tool to get a greeting.',
         }
       }
     }),

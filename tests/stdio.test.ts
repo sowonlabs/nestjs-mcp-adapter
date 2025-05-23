@@ -6,7 +6,6 @@ import {
   InitializeResultSchema,
   CallToolRequest,
   CallToolResultSchema,
-  InitializeRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
 
 describe('Greet Test', () => {
@@ -20,8 +19,11 @@ describe('Greet Test', () => {
     });
 
     transport = new StdioClientTransport({
-      command: 'npx',
-      args: ['ts-node', 'examples/greet/main-stdio.ts'],
+      command: 'sh',
+      args: [
+        '-c',
+        'cd ../ && npm run example:greet:stdio',
+      ],
     });
 
     await client.connect(transport);
@@ -49,6 +51,27 @@ describe('Greet Test', () => {
     };
 
     const response = await client.request(request, InitializeResultSchema);
+
+    // 응답 기본 구조 검증
+    expect(response).toBeDefined();
+    expect(response.protocolVersion).toBeDefined();
+    expect(response.capabilities).toBeDefined();
+    expect(response.serverInfo).toBeDefined();
+    expect(response.instructions).toBeDefined();
+    
+    // 프로토콜 버전 검증
+    expect(response.protocolVersion).toBe('2024-11-05');
+    
+    // 서버 정보 검증
+    expect(response.serverInfo.name).toBe('greet');
+    expect(response.serverInfo.version).toBe('1.0.0');
+    
+    // capabilities 구조 검증
+    expect(response.capabilities.logging).toBeDefined();
+    expect(response.capabilities.prompts).toBeDefined();
+    expect(response.capabilities.resources).toBeDefined();
+    expect(response.capabilities.tools).toBeDefined();
+
     console.log('Response:', response);
   }, 60_000);
 
@@ -62,6 +85,15 @@ describe('Greet Test', () => {
     };
 
     const response = await client.request(request, CallToolResultSchema);
+    expect(response.content).toBeDefined();
+    expect(response.isError).toBe(false);
+    expect(Array.isArray(response.content)).toBe(true);
+
+    if (response.content) {
+      expect(response.content[0].type).toBe('text');
+      expect(response.content[0].text).toBe('Hello, MCP!');
+    }
+
     console.log('Response:', response);
   }, 60_000);
   
