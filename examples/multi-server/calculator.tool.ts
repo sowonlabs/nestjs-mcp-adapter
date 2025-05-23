@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { McpTool } from '../../src/decorators/mcp-tool.decorator';
+import { McpTool } from '@sowonai/nest-mcp-adapter';
 import { z } from 'zod';
 
 @Injectable()

@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { McpAdapterModule } from '../../src/mcp-adapter.module';
+import { McpAdapterModule } from '@sowonai/nest-mcp-adapter';
+import { AuthGuard } from './auth.guard';
 import { GreetToolService } from './greet.tool';
 import { McpController } from './mcp.controller';
-import { AuthGuard } from './auth.guard';
 
 @Module({
   imports: [

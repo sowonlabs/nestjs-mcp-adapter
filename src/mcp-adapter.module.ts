@@ -1,9 +1,9 @@
 import { Module, DynamicModule, Provider } from '@nestjs/common';
 import { DiscoveryModule } from '@nestjs/core';
-import { MultiServerRegistry } from './registry/multi-server-registry';
-import { McpHandler } from './handlers/mcp-handler';
-import { McpModuleOptions } from './interfaces';
-import { MCP_MODULE_OPTIONS } from './decorators/constants';
+import { MultiServerRegistry } from '@registry/multi-server-registry';
+import { McpHandler } from '@handlers/mcp-handler';
+import { McpModuleOptions } from '@interfaces';
+import { MCP_MODULE_OPTIONS } from '@decorators/constants';
 
 /**
  * MCP adapter module

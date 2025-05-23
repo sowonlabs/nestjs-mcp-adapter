@@ -1,8 +1,8 @@
 import { Injectable, Logger, Inject } from '@nestjs/common';
-import { MultiServerRegistry } from '../registry/multi-server-registry';
-import { JsonRpcRequest, JsonRpcResponse } from '../interfaces/json-rpc.interface';
+import { MultiServerRegistry } from '@registry/multi-server-registry';
+import { JsonRpcRequest, JsonRpcResponse } from '@interfaces/json-rpc.interface';
 import { Request, Response } from 'express'; // Response는 직접 사용하지 않으므로 제거
-import { McpError, ErrorCode } from "../errors";
+import { McpError, ErrorCode } from "@errors";
 import { z } from 'zod';
 import {
   isJSONRPCRequest,
@@ -10,8 +10,8 @@ import {
   ToolAnnotations as McpToolAnnotations
 } from '@modelcontextprotocol/sdk/types.js';
 import { zodToJsonSchema } from 'zod-to-json-schema';
-import { McpModuleOptions } from '../interfaces';
-import { MCP_MODULE_OPTIONS } from '../decorators/constants';
+import { McpModuleOptions } from '@interfaces';
+import { MCP_MODULE_OPTIONS } from '@decorators/constants';
 
 // Define types directly (ensure compatibility with the actual SDK)
 type McpRequest<T extends string = string> = JsonRpcRequest & {

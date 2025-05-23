@@ -1,12 +1,13 @@
 import { NestFactory } from '@nestjs/core';
-import { StdioExpressAdapter } from '../../src/stdio-express-adapter';
+import { StdioExpressAdapter, StderrLogger } from '@sowonai/nest-mcp-adapter';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const useLog = false;
+  const useLog = true;
   const adapter = new StdioExpressAdapter('/mcp');
+  const logger = new StderrLogger('Greet', { timestamp: true });
   const app = await NestFactory.create(AppModule, adapter, {
-    logger: useLog ? ['error', 'warn', 'log', 'debug'] : false,
+    logger: useLog ? logger : false,
   });
 
   await app.init();

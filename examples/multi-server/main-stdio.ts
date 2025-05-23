@@ -1,12 +1,15 @@
 import { NestFactory } from '@nestjs/core';
-import { StdioExpressAdapter } from '../../src/stdio-express-adapter';
+import { StdioExpressAdapter, StderrLogger } from '@sowonai/nest-mcp-adapter';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const useLog = false;
-  const adapter = new StdioExpressAdapter('/mcp/mcp-other');
+  const useLog = true; // 로깅 활성화
+  const adapter = new StdioExpressAdapter('/mcp');
+  // StderrLogger 인스턴스 생성
+  const logger = new StderrLogger('MultiServer', { timestamp: true }); 
   const app = await NestFactory.create(AppModule, adapter, {
-    logger: useLog ? ['error', 'warn', 'log'] : false,
+    // logger 옵션에 StderrLogger 인스턴스 전달
+    logger: useLog ? logger : false, 
   });
 
   await app.init();

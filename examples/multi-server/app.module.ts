@@ -1,33 +1,33 @@
 import { Module } from '@nestjs/common';
-import { McpAdapterModule } from '../../src/mcp-adapter.module';
+import { McpAdapterModule } from '@sowonai/nest-mcp-adapter';
+import { AuthGuard } from './auth.guard';
 import { CalculatorToolService } from './calculator.tool';
 import { UsersResourceService } from './users.resource';
 import { McpController } from './mcp.controller';
 import { HelloController } from './hello.controller';
-import { AuthGuard } from './auth.guard';
 
 @Module({
   imports: [
     McpAdapterModule.forRoot({
       servers: {
-        'mcp-calculator': {
+        'calculator': {
           version: '1.0.0',
-          instructions: 'Calculator server: supports add, subtract, multiply, divide.',
+          instructions: 'You can use the calculator.',
         },
-        'mcp-userinfo': {
-          version: '0.1.0',
-          instructions: 'User information server: provides user profiles.',
+        'userinfo': {
+          version: '1.0.0',
+          instructions: 'You can use the user information.',
         },
-        'mcp-other': {
-          version: '0.2.0',
-          instructions: 'A shared server for miscellaneous tools and resources.',
-        },
+        'other': {
+          version: '1.0.0',
+          instructions: 'You can use the other server.', 
+        }
       },
     }),
   ],
   controllers: [
-    HelloController,
     McpController,
+    HelloController, // HelloController 추가
   ],
   providers: [
     CalculatorToolService,

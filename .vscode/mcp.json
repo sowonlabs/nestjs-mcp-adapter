@@ -1,0 +1,11 @@
+{
+  "servers": {
+    "Greet": {
+      "command": "sh",
+      "args": [
+        "-c",
+        "cd '${workspaceFolder}' && npm run example:greet:stdio"
+      ]
+    }
+  }
+}

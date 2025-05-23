@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { McpToolOptions } from '../decorators/mcp-tool.decorator';
-import { McpResourceOptions } from '../decorators/mcp-resource.decorator';
+import { McpToolOptions } from '@decorators/mcp-tool.decorator';
+import { McpResourceOptions } from '@decorators/mcp-resource.decorator';
 import { zodToJsonSchema } from 'zod-to-json-schema';
-import { ErrorCode, McpError } from '../errors/mcp-error';
+import { ErrorCode, McpError } from '@errors/mcp-error';
 
 /**
  * Registry for managing tools and resources of a single server

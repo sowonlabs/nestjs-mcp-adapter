@@ -1,10 +1,10 @@
 import { Injectable, Logger, OnApplicationBootstrap, Inject } from '@nestjs/common';
 import { DiscoveryService, MetadataScanner, ModuleRef } from '@nestjs/core';
 import { ServerRegistry } from './server-registry';
-import { MCP_TOOL_METADATA_KEY, MCP_RESOURCE_METADATA_KEY, MCP_MODULE_OPTIONS } from '../decorators/constants';
-import { McpModuleOptions } from '../interfaces';
-import { McpToolOptions } from '../decorators/mcp-tool.decorator';
-import { McpResourceOptions } from '../decorators/mcp-resource.decorator';
+import { MCP_TOOL_METADATA_KEY, MCP_RESOURCE_METADATA_KEY, MCP_MODULE_OPTIONS } from '@decorators/constants';
+import { McpModuleOptions } from '@interfaces';
+import { McpToolOptions } from '@decorators/mcp-tool.decorator';
+import { McpResourceOptions } from '@decorators/mcp-resource.decorator';
 
 /**
  * Multi-server registry
@@ -113,11 +113,23 @@ export class MultiServerRegistry implements OnApplicationBootstrap {
                 // Register tool for each server
                 for (const serverName of serverNames) {
                   if (!this.servers.has(serverName)) {
-                    throw new Error(
-                      `Cannot register tool '${toolName}' from ${componentName}.${methodName} for server '${serverName}'. ` +
-                      `ServerRegistry for '${serverName}' was not found. ` +
-                      `Ensure '${serverName}' is defined in McpModuleOptions.servers.`
-                    );
+                    const errorMessage = `
+Server '${serverName}' is not defined.
+Cannot register tool '${toolName}' (Component: ${componentName}, Method: ${methodName}).
+
+Action Required:
+  To use server '${serverName}', define it in the McpAdapterModule.forRoot()
+  configuration in your main application module (e.g., app.module.ts).
+
+Example (app.module.ts):
+  McpAdapterModule.forRoot({
+    servers: {
+      '${serverName}': { version: '1.0.0', instructions: '...' },
+      // ... other configured servers
+    }
+  })
+`;
+                    throw new Error(errorMessage);
                   }
                   const serverRegistry = this.servers.get(serverName)!;
                   serverRegistry.registerTool(toolName, toolOptions, methodRef.bind(instance));
@@ -159,11 +171,28 @@ export class MultiServerRegistry implements OnApplicationBootstrap {
 
                 for (const serverName of serverNames) {
                   if (!this.servers.has(serverName)) {
-                    throw new Error(
-                      `Cannot register resource with URI '${resourceOptions.uri}' from ${componentName}.${methodName} for server '${serverName}'. ` +
-                      `ServerRegistry for '${serverName}' was not found. ` +
-                      `Ensure '${serverName}' is defined in McpModuleOptions.servers.`
-                    );
+                    const errorMessage = `
+================================================================================
+[MCP Setup Error - Resource Registration]
+--------------------------------------------------------------------------------
+Server '${serverName}' is not defined.
+Cannot register resource with URI '${resourceOptions.uri}' (Component: ${componentName}, Method: ${methodName}).
+
+Action Required:
+  To use server '${serverName}', define it in the McpAdapterModule.forRoot()
+  configuration in your main application module (e.g., app.module.ts).
+
+Example (app.module.ts):
+  McpAdapterModule.forRoot({
+    servers: {
+      '${serverName}': { version: '1.0.0', instructions: '...' },
+      // ... other configured servers
+    }
+  })
+--------------------------------------------------------------------------------
+================================================================================
+`;
+                    throw new Error(errorMessage);
                   }
                   const serverRegistry = this.servers.get(serverName)!;
                   serverRegistry.registerResource(resourceOptions.uri, resourceOptions, methodRef.bind(instance));

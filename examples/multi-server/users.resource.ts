@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { McpResource } from '../../src/decorators/mcp-resource.decorator';
+import { McpResource } from '@sowonai/nest-mcp-adapter';
 
 @Injectable()
 export class UsersResourceService {

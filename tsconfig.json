@@ -19,8 +19,23 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "esModuleInterop": true,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "paths": {
+      "@sowonai/nest-mcp-adapter": ["./src"],
+      "@sowonai/nest-mcp-adapter/*": ["./src/*"],
+      "@/*": ["src/*"],
+      "@decorators/*": ["src/decorators/*"],
+      "@decorators": ["src/decorators/index"],
+      "@errors/*": ["src/errors/*"],
+      "@errors": ["src/errors/index"],
+      "@interfaces/*": ["src/interfaces/*"],
+      "@interfaces": ["src/interfaces/index"],
+      "@registry/*": ["src/registry/*"],
+      "@handlers/*": ["src/handlers/*"],
+      "@filters/*": ["src/filters/*"],
+      "@loggers/*": ["src/loggers/*"]
+    }
   },
-  "include": ["src/**/*", "tests/**/*", "playground/**/*"],
+  "include": ["src/**/*", "tests/**/*", "playground/**/*", "examples/**/*"],
   "exclude": ["node_modules", "dist"]
 }

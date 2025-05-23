@@ -13,6 +13,9 @@ export * from './registry';
 // Handlers
 export * from './handlers';
 
+// Loggers
+export * from './loggers';
+
 // Module
 export * from './mcp-adapter.module';
 

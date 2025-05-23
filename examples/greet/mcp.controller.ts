@@ -1,9 +1,7 @@
-import { Controller, Post, Get, Body, UseGuards, UseFilters, Req, Res, HttpCode } from '@nestjs/common';
-import { McpHandler } from '../../src/handlers/mcp-handler';
-import { JsonRpcRequest } from '../../src/interfaces/json-rpc.interface';
-import { AuthGuard } from './auth.guard';
-import { JsonRpcExceptionFilter } from '../../src/filters/json-rpc-exception.filter';
+import { Body, Controller, HttpCode, Post, Req, Res, UseFilters, UseGuards } from '@nestjs/common';
+import { JsonRpcRequest, JsonRpcExceptionFilter, McpHandler } from '@sowonai/nest-mcp-adapter';
 import { Request, Response } from 'express';
+import { AuthGuard } from './auth.guard';
 
 @Controller('mcp')
 @UseGuards(AuthGuard)

@@ -1,12 +1,10 @@
-import { Controller, Post, Get, Param, Body, UseGuards, Req, Res, HttpCode, UseFilters, UseInterceptors } from '@nestjs/common';
-import { McpHandler } from '../../src/handlers/mcp-handler';
-import { JsonRpcRequest } from '../../src/interfaces/json-rpc.interface';
-import { JsonRpcExceptionFilter } from '../../src/filters/json-rpc-exception.filter';
-import { AuthGuard } from './auth.guard';
+import { Body, Controller, HttpCode, Param, Post, Req, Res, UseFilters, UseGuards, UseInterceptors } from '@nestjs/common';
+import { JsonRpcRequest, JsonRpcExceptionFilter, McpHandler } from '@sowonai/nest-mcp-adapter';
 import { Request, Response } from 'express';
+import { AuthGuard } from './auth.guard';
 import { LoggingInterceptor } from './logging.interceptor';
 
-@Controller('mcp')
+@Controller('mcp/:serverName')
 @UseGuards(AuthGuard)
 @UseFilters(JsonRpcExceptionFilter)
 // @UseInterceptors(LoggingInterceptor)
@@ -15,12 +13,15 @@ export class McpController {
     private readonly mcpHandler: McpHandler
   ) {}
 
-  @Post(':serverName')
+  @Post()
   @HttpCode(202)
   async handlePost(
-    @Param('serverName') serverName: string = 'default',
-    @Req() req: Request, @Res() res: Response, @Body() body: any
+    @Param('serverName') serverName: string, // @Param 데코레이터로 serverName 주입
+    @Req() req: Request, 
+    @Res() res: Response, 
+    @Body() body: JsonRpcRequest
   ) {
+    // 주입된 serverName 사용
     const result = await this.mcpHandler.handleRequest(serverName, req, res, body);
 
     // If it's a notification request or the response is null, send an empty response
