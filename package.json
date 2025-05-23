@@ -32,7 +32,7 @@
     "inspector": "npx @modelcontextprotocol/inspector --config inspector.config.json --server greet"
   },
   "peerDependencies": {
-    "@modelcontextprotocol/sdk": "^1.11.0",
+    "@modelcontextprotocol/sdk": "^1.12.0",
     "@nestjs/common": ">=9.0.0",
     "@nestjs/core": ">=9.0.0",
     "@nestjs/platform-express": "^11.0.5",
