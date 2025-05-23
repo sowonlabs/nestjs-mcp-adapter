@@ -1,7 +1,7 @@
 {
   "name": "@sowonai/nestjs-mcp-adapter",
   "version": "0.1.3",
-  "description": "",
+  "description": "NestJS adapter for MCP(Model Context Protocol)",
   "keywords": [
     "nestjs",
     "mcp",
