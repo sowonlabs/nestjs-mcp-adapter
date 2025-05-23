@@ -1,10 +1,11 @@
 import { Injectable, Logger, OnApplicationBootstrap, Inject } from '@nestjs/common';
 import { DiscoveryService, MetadataScanner, ModuleRef } from '@nestjs/core';
 import { ServerRegistry } from './server-registry';
-import { MCP_TOOL_METADATA_KEY, MCP_RESOURCE_METADATA_KEY, MCP_MODULE_OPTIONS } from '../decorators/constants';
+import { MCP_TOOL_METADATA_KEY, MCP_RESOURCE_METADATA_KEY, MCP_PROMPT_METADATA_KEY, MCP_MODULE_OPTIONS } from '../decorators/constants';
 import { McpModuleOptions } from '../interfaces';
 import { McpToolOptions } from '../decorators/mcp-tool.decorator';
 import { McpResourceOptions } from '../decorators/mcp-resource.decorator';
+import { McpPromptOptions } from '../decorators/mcp-prompt.decorator';
 
 /**
  * Multi-server registry
@@ -40,6 +41,7 @@ export class MultiServerRegistry implements OnApplicationBootstrap {
 
     await this.discoverAndRegisterTools();
     await this.discoverAndRegisterResources();
+    await this.discoverAndRegisterPrompts();
   }
 
   /**
@@ -80,6 +82,14 @@ export class MultiServerRegistry implements OnApplicationBootstrap {
   getAllResources(serverName: string) {
     const registry = this.getServerRegistry(serverName);
     return registry.getAllResources();
+  }
+
+  /**
+   * Get all prompts from a specific server
+   */
+  getAllPrompts(serverName: string) {
+    const registry = this.getServerRegistry(serverName);
+    return registry.getAllPrompts();
   }
 
   /**
@@ -168,6 +178,53 @@ export class MultiServerRegistry implements OnApplicationBootstrap {
                   const serverRegistry = this.servers.get(serverName)!;
                   serverRegistry.registerResource(resourceOptions.uri, resourceOptions, methodRef.bind(instance));
                   this.logger.log(`Registered resource with URI '${resourceOptions.uri}' for server '${serverName}' from ${componentName}.${methodName}`);
+                }
+              }
+            },
+          );
+        }),
+    );
+  }
+
+  /**
+   * Discover and register prompts using @McpPrompt decorator
+   */
+  private async discoverAndRegisterPrompts() {
+    const providers = this.discoveryService.getProviders();
+
+    await Promise.all(
+      providers
+        .filter(wrapper => wrapper.instance && Object.getPrototypeOf(wrapper.instance))
+        .map(async wrapper => {
+          const { instance } = wrapper;
+          const prototype = Object.getPrototypeOf(instance);
+          const componentName = wrapper.name; // For logging
+
+          this.metadataScanner.scanFromPrototype(
+            instance,
+            prototype,
+            methodName => {
+              const methodRef = instance[methodName];
+              const metadata = Reflect.getMetadata(MCP_PROMPT_METADATA_KEY, methodRef);
+
+              if (metadata) {
+                const promptOptions = metadata as McpPromptOptions;
+                const serverNames = Array.isArray(promptOptions.server)
+                  ? promptOptions.server
+                  : [promptOptions.server];
+                const promptName = promptOptions.name;
+
+                for (const serverName of serverNames) {
+                  if (!this.servers.has(serverName)) {
+                    throw new Error(
+                      `Cannot register prompt '${promptName}' from ${componentName}.${methodName} for server '${serverName}'. ` +
+                      `ServerRegistry for '${serverName}' was not found. ` +
+                      `Ensure '${serverName}' is defined in McpModuleOptions.servers.`
+                    );
+                  }
+                  const serverRegistry = this.servers.get(serverName)!;
+                  serverRegistry.registerPrompt(promptName, promptOptions, methodRef.bind(instance));
+                  this.logger.log(`Registered prompt '${promptName}' for server '${serverName}' from ${componentName}.${methodName}`);
                 }
               }
             },

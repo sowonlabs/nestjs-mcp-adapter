@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { McpToolOptions } from '../decorators/mcp-tool.decorator';
 import { McpResourceOptions } from '../decorators/mcp-resource.decorator';
+import { McpPromptOptions } from '../decorators/mcp-prompt.decorator';
 import { zodToJsonSchema } from 'zod-to-json-schema';
 import { ErrorCode, McpError } from '../errors/mcp-error';
 
@@ -11,6 +12,7 @@ import { ErrorCode, McpError } from '../errors/mcp-error';
 export class ServerRegistry {
   private readonly tools = new Map<string, { metadata: McpToolOptions<any>; handler: Function }>();
   private readonly resources = new Map<string, { metadata: McpResourceOptions; handler: Function }>();
+  private readonly prompts = new Map<string, { metadata: McpPromptOptions; handler: Function }>();
   
   /**
    * Register a tool
@@ -27,6 +29,13 @@ export class ServerRegistry {
   }
   
   /**
+   * Register a prompt
+   */
+  registerPrompt(name: string, metadata: McpPromptOptions, handler: Function): void {
+    this.prompts.set(name, { metadata, handler });
+  }
+  
+  /**
    * Get a tool
    */
   getTool(name: string): { metadata: McpToolOptions<any>; handler: Function } | undefined {
@@ -38,6 +47,13 @@ export class ServerRegistry {
    */
   getResource(uri: string): { metadata: McpResourceOptions; handler: Function } | undefined {
     return this.resources.get(uri);
+  }
+  
+  /**
+   * Get a prompt
+   */
+  getPrompt(name: string): { metadata: McpPromptOptions; handler: Function } | undefined {
+    return this.prompts.get(name);
   }
   
   /**
@@ -63,6 +79,17 @@ export class ServerRegistry {
   }
   
   /**
+   * Get all prompts
+   */
+  getAllPrompts(): { name: string; metadata: McpPromptOptions; handler: Function }[] {
+    return Array.from(this.prompts.entries()).map(([name, value]) => ({
+      name,
+      metadata: value.metadata,
+      handler: value.handler,
+    }));
+  }
+  
+  /**
    * Get server metadata
    */
   getServerMetadata() {
@@ -79,9 +106,17 @@ export class ServerRegistry {
       mimeType: metadata.mimeType,
     }));
     
+    const prompts = Array.from(this.prompts.entries()).map(([name, { metadata }]) => ({
+      name: metadata.name,
+      description: metadata.description,
+      prompt: metadata.prompt,
+      annotations: metadata.annotations,
+    }));
+    
     return {
       tools,
       resources,
+      prompts,
     };
   }
 }

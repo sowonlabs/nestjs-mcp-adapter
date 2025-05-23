@@ -69,6 +69,15 @@ export class McpHandler {
       case 'tools/call':
         resultPayload = await this.handleToolsCallRequest(serverName, mcpRequest as McpRequest<'tools/call'>);
         break;
+      case 'resources/list':
+        resultPayload = await this.handleResourcesListRequest(serverName, mcpRequest as McpRequest<'resources/list'>);
+        break;
+      case 'resources/get':
+        resultPayload = await this.handleResourcesGetRequest(serverName, mcpRequest as McpRequest<'resources/get'>);
+        break;
+      case 'prompts/list':
+        resultPayload = await this.handlePromptsListRequest(serverName, mcpRequest as McpRequest<'prompts/list'>);
+        break;
       case 'ping':
         resultPayload = await this.handlePingRequest();
         break;
@@ -230,5 +239,80 @@ export class McpHandler {
         isError: true
       };
     }
+  }
+
+  private async handleResourcesListRequest(serverName: string, request: McpRequest<'resources/list'>): Promise<McpResponse<'resources/list'>['result']> {
+    const registry = this.multiServerRegistry.getServerRegistry(serverName);
+    const resourceInfos = registry.getAllResources();
+
+    const resources = resourceInfos.map((resourceInfo) => {
+      const { uri, metadata } = resourceInfo;
+      return {
+        uri: metadata.uri || uri,
+        description: metadata.description || 'No description provided',
+        mimeType: metadata.mimeType,
+      };
+    });
+
+    return {
+      resources,
+    };
+  }
+
+  private async handleResourcesGetRequest(serverName: string, request: McpRequest<'resources/get'>): Promise<McpResponse<'resources/get'>['result']> {
+    const { uri } = request.params || {};
+    
+    if (!uri) {
+      throw new McpError(ErrorCode.InvalidParams, "Resource URI is required");
+    }
+    
+    const registry = this.multiServerRegistry.getServerRegistry(serverName);
+    const resource = registry.getResource(uri);
+    
+    if (!resource) {
+      throw new McpError(ErrorCode.MethodNotFound, `Resource with URI '${uri}' not found`);
+    }
+    
+    try {
+      // Execute the resource handler
+      const result = await resource.handler();
+      
+      // Return the resource data
+      return {
+        data: result,
+        mimeType: resource.metadata.mimeType,
+      };
+    } catch (error) {
+      // Handle errors that occur during resource retrieval
+      this.logger.error(`Error retrieving resource '${uri}':`, error);
+      
+      if (error instanceof McpError) {
+        throw error; // Propagate MCP errors as is
+      }
+      
+      // Convert general errors
+      throw new McpError(
+        ErrorCode.InternalError, 
+        `Error retrieving resource '${uri}': ${error.message || 'Unknown error'}`
+      );
+    }
+  }
+
+  private async handlePromptsListRequest(serverName: string, request: McpRequest<'prompts/list'>): Promise<McpResponse<'prompts/list'>['result']> {
+    const registry = this.multiServerRegistry.getServerRegistry(serverName);
+    const promptInfos = registry.getAllPrompts();
+
+    const prompts = promptInfos.map((promptInfo) => {
+      const { name, metadata } = promptInfo;
+      return {
+        name: metadata.name || name,
+        description: metadata.description || 'No description provided',
+        annotations: metadata.annotations || {},
+      };
+    });
+
+    return {
+      prompts,
+    };
   }
 }
