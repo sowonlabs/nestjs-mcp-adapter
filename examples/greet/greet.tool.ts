@@ -5,7 +5,7 @@ import { z } from 'zod';
 @Injectable()
 export class GreetToolService {
   @McpTool({
-    server: 'mcp-greet',
+    server: 'greet',
     name: 'hello',
     description: 'Say hello to the user.',
     input: {},
@@ -22,7 +22,7 @@ export class GreetToolService {
   }
 
   @McpTool({
-    server: 'mcp-greet',
+    server: 'greet',
     name: 'helloMessage',
     description: 'Say hello to the user.',
     input: {

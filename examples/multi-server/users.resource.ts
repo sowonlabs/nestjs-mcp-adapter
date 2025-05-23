@@ -4,7 +4,7 @@ import { McpResource } from '@sowonai/nest-mcp-adapter';
 @Injectable()
 export class UsersResourceService {
   @McpResource({
-    server: ['mcp-userinfo', 'mcp-calculator'],
+    server: ['userinfo', 'calculator'],
     uri: 'users://{userId}/profile',
     description: 'User profile information',
     mimeType: 'text/plain',

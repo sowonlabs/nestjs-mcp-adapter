@@ -10,9 +10,6 @@ async function bootstrap() {
     logger: useLog ? logger : false,
   });
 
-  await app.init();
-  await app.listen(0); // Not bind actually
-
   process.on('SIGINT', async () => {
     console.log('Shutting down application...');
     await adapter.close();
@@ -20,7 +17,8 @@ async function bootstrap() {
     process.exit(0);
   });
 
-  console.log('STDIO MCP server started.');
+  await app.init();
+  await app.listen(0); // Not bind actually
 }
 
 bootstrap();

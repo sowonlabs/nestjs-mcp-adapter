@@ -5,7 +5,7 @@ import { z } from 'zod';
 @Injectable()
 export class CalculatorToolService {
   @McpTool({
-    server: ['mcp-calculator', 'mcp-other'],
+    server: ['calculator', 'other'],
     name: 'calculate',
     description: 'Performs mathematical operations.',
     input: {

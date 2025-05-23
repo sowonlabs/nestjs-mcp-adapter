@@ -8,10 +8,12 @@ It supports both STDIO and HTTP protocols, and allows you to use all features of
 
 ## Features
 - **MCP Tool**: Easily create MCP tools with decorators.
-- **(TOBE)MCP Resource**: Create MCP resources with decorators.
-- **(TOBE)MCP Prompt**: Create MCP prompts with decorators.
+- **(TOBE) MCP Resource**: Create MCP resources with decorators.
+- **(TOBE) MCP Prompt**: Create MCP prompts with decorators.
 - Supports both STDIO and HTTP protocols.
 - Supports multiple MCP servers.
+- (TOBE) Supports notifications.
+- (TOBE) Supports sampling.
 
 ## Installation
 

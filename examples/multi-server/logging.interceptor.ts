@@ -11,15 +11,15 @@ export class LoggingInterceptor implements NestInterceptor {
     const response = httpContext.getResponse<Response>(); // Express Response
 
     const { method, url, body: requestBody } = request;
-    console.log(`[REQ] ${method} ${url}`);
+    console.warn(`[REQ] ${method} ${url}`);
     if (requestBody && Object.keys(requestBody).length > 0) {
       try {
-        console.log('[REQ] Payload:', JSON.stringify(requestBody, null, 2));
+        console.warn('[REQ] Payload:', JSON.stringify(requestBody, null, 2));
       } catch (e) {
-        console.log('[REQ] Payload (Not JSON serializable):', requestBody);
+        console.warn('[REQ] Payload (Not JSON serializable):', requestBody);
       }
     } else {
-      console.log('[REQ] Payload: (None)');
+      console.warn('[REQ] Payload: (None)');
     }
 
     const now = Date.now();
@@ -28,9 +28,9 @@ export class LoggingInterceptor implements NestInterceptor {
     const originalJson = response.json;
     response.json = (body) => {
       try {
-        console.log('[RES] Payload (JSON):', JSON.stringify(body, null, 2));
+        console.warn('[RES] Payload (JSON):', JSON.stringify(body, null, 2));
       } catch (e) {
-        console.log('[RES] Payload (JSON, Not JSON serializable):', body);
+        console.warn('[RES] Payload (JSON, Not JSON serializable):', body);
       }
       return originalJson.call(response, body); // Call original json method
     };
@@ -43,23 +43,23 @@ export class LoggingInterceptor implements NestInterceptor {
           try {
             // Check if it's a JSON string and pretty-print
             const parsedJson = JSON.parse(body);
-            console.log('[RES] Payload (send, JSON string):', JSON.stringify(parsedJson, null, 2));
+            console.warn('[RES] Payload (send, JSON string):', JSON.stringify(parsedJson, null, 2));
           } catch (e) {
-            console.log('[RES] Payload (send, string):', body);
+            console.warn('[RES] Payload (send, string):', body);
           }
         } else if (Buffer.isBuffer(body)) {
-          console.log('[RES] Payload (send, buffer):', body.toString());
+          console.warn('[RES] Payload (send, buffer):', body.toString());
         } else if (typeof body === 'object') {
           try {
-            console.log('[RES] Payload (send, object):', JSON.stringify(body, null, 2));
+            console.warn('[RES] Payload (send, object):', JSON.stringify(body, null, 2));
           } catch (e) {
-            console.log('[RES] Payload (send, object, Not JSON serializable):', body);
+            console.warn('[RES] Payload (send, object, Not JSON serializable):', body);
           }
         } else {
-          console.log('[RES] Payload (send):', body);
+          console.warn('[RES] Payload (send):', body);
         }
       } else {
-        console.log('[RES] Payload (send): (None)');
+        console.warn('[RES] Payload (send): (None)');
       }
       return originalSend.call(response, body); // Call original send method
     };
@@ -69,13 +69,10 @@ export class LoggingInterceptor implements NestInterceptor {
       .pipe(
         tap({
           next: (handlerReturnValue) => {
-            // Value returned by McpController's handlePost method (ServerResponse object)
-            // Actual response body logging is handled by the patched methods above.
-            console.log(`[INFO] Handler completed. Processing time: ${Date.now() - now}ms`);
+            console.warn(`[INFO] Handler completed. Processing time: ${Date.now() - now}ms`);
           },
           error: (err) => {
             console.error(`[ERR] Error during request processing: ${err.message || err}`, err.stack);
-            console.log(`[INFO] Request failed. Processing time: ${Date.now() - now}ms`);
           }
         })
       );

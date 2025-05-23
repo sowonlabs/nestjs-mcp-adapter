@@ -7,7 +7,7 @@ import { LoggingInterceptor } from './logging.interceptor';
 @Controller('mcp/:serverName')
 @UseGuards(AuthGuard)
 @UseFilters(JsonRpcExceptionFilter)
-// @UseInterceptors(LoggingInterceptor)
+@UseInterceptors(LoggingInterceptor)
 export class McpController {
   constructor(
     private readonly mcpHandler: McpHandler
