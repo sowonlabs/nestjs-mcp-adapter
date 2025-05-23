@@ -8,8 +8,8 @@ It supports both STDIO and HTTP protocols, and allows you to use all features of
 
 ## Features
 - **MCP Tool**: Easily create MCP tools with decorators.
-- **(TOBE)MCP Resource**: Create MCP resources with decorators.
-- **(TOBE)MCP Prompt**: Create MCP prompts with decorators.
+- **MCP Resource**: Create MCP resources with decorators.
+- **MCP Prompt**: Create MCP prompts with decorators.
 - Supports both STDIO and HTTP protocols.
 - Supports multiple MCP servers.
 
@@ -287,6 +287,91 @@ import { McpMultiServerController } from './mcp.controller';
   ],
 })
 export class AppModuleMultiServer {}
+```
+
+## Resource Definition Example
+
+This example demonstrates how to create a resource that can be accessed through the MCP protocol.
+
+```typescript
+import { Injectable } from '@nestjs/common';
+import { McpResource } from '@sowonai/nest-mcp-adapter';
+
+@Injectable()
+export class UserResourceService {
+  private readonly users = [
+    { id: 1, name: 'Alice', role: 'admin' },
+    { id: 2, name: 'Bob', role: 'user' },
+    { id: 3, name: 'Charlie', role: 'user' },
+  ];
+
+  @McpResource({
+    server: 'mcp-resource-server',
+    uri: '/api/users',
+    description: 'List of users in the system',
+    mimeType: 'application/json',
+  })
+  async getUsers() {
+    return this.users;
+  }
+
+  @McpResource({
+    server: 'mcp-resource-server',
+    uri: '/api/readme',
+    description: 'Project README file',
+    mimeType: 'text/markdown',
+  })
+  async getReadme() {
+    return '# Project Documentation\n\nThis is the project readme file.';
+  }
+}
+```
+
+## Prompt Definition Example
+
+This example demonstrates how to create prompts that can be accessed through the MCP protocol.
+
+```typescript
+import { Injectable } from '@nestjs/common';
+import { McpPrompt } from '@sowonai/nest-mcp-adapter';
+
+@Injectable()
+export class AIPromptService {
+  @McpPrompt({
+    server: 'mcp-prompt-server',
+    name: 'summarize',
+    description: 'Summarize the given text',
+    prompt: 'Summarize the following text in 3 bullet points:\n\n{text}',
+    annotations: {
+      title: 'Text Summarizer',
+      category: 'Text Processing',
+      tags: ['summary', 'bullets'],
+    },
+  })
+  async getSummarizePrompt() {
+    // This method can be used to dynamically modify the prompt if needed
+    return {
+      result: 'Summarize the following text in 3 bullet points:\n\n{text}',
+    };
+  }
+
+  @McpPrompt({
+    server: 'mcp-prompt-server',
+    name: 'codeReview',
+    description: 'Review code for bugs and improvements',
+    prompt: 'Review the following code for bugs and suggest improvements:\n\n```{language}\n{code}\n```',
+    annotations: {
+      title: 'Code Reviewer',
+      category: 'Development',
+      tags: ['code', 'review', 'programming'],
+    },
+  })
+  async getCodeReviewPrompt() {
+    return {
+      result: 'Review the following code for bugs and suggest improvements:\n\n```{language}\n{code}\n```',
+    };
+  }
+}
 ```
 
 ## Example: Using HTTP Protocol
