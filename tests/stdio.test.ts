@@ -6,7 +6,8 @@ import {
   InitializeResultSchema,
   CallToolRequest,
   CallToolResultSchema,
-  InitializeRequestSchema,
+  ListResourcesRequest,
+  ListResourcesResultSchema,
 } from '@modelcontextprotocol/sdk/types.js';
 
 describe('Greet Test', () => {
